@@ -26,11 +26,11 @@ int Interface::comm_proc(int argc, char** argv)
         // параметр --first
         ("basefile,b", // имя (длинное)
          po::value<std::string>()->default_value("base.txt"), // значение типа std::string, сохраняется дополнительно в переменную s
-         "option is string(path to file with database")   // текст справки
+         "option is string(path to file with database)")   // текст справки
         // параметр --second, -s
         ("logfile,l",                          // имя (длинное и короткое)
          po::value<std::string>()->default_value("log.txt"), //значение типа int, при умолчании = 25
-         "option is string(path to file with logs") // текст справки
+         "option is string(path to file with logs)") // текст справки
         // параметр --third, -t
         ("PORT,p",                                // имя (длинное и короткое)
          po::value<int>()->default_value(33333), //значение типа float, при пропуске = 3.14
