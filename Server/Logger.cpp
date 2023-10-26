@@ -4,6 +4,13 @@
 #include <time.h>
 #include <fstream>
 using namespace std;
+int Logger::set_path(std::string path_file){
+    std::ofstream filelog;
+    filelog.open(path_file,std::ios_base::out | std::ios_base::app);
+    if(filelog.is_open()) {
+        return 0;
+    }else{return 1;}
+    }
 string Logger::getCurrentDateTime( string s ){
     time_t now = time(0);
     struct tm  tstruct;
@@ -15,12 +22,13 @@ string Logger::getCurrentDateTime( string s ){
         strftime(buf, sizeof(buf), "%Y-%m-%d", &tstruct);
     return string(buf);
 };
-void Logger::writelog(std::string s)
+int Logger::writelog(std::string s)
 {
     std::ofstream filelog;
     filelog.open(path_to_logfile,std::ios_base::out | std::ios_base::app);
     if(filelog.is_open()) {
         std::string time = getCurrentDateTime("now");
         filelog << time<<' '<< s << std::endl;
-    }
+        return 0;
+    }else{return 1;}
 }

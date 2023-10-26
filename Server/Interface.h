@@ -3,7 +3,7 @@
 #include <string>
 class Interface{
 public:
-friend void Logger::writelog(std::string s);
+friend int Logger::writelog(std::string s);
     int PORT;
     std::string IP;
     int ID;

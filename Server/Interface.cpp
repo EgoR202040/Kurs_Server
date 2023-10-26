@@ -43,31 +43,31 @@ int Interface::comm_proc(int argc, char** argv)
             std::cout << opts << "\n";
             exit(0);
         }
-        
+
         if(vm.count("basefile")) {
-            if(vm["basefile"].as<std::string>() == "base.txt"){
+            if(vm["basefile"].as<std::string>() == "base.txt") {
                 flag_b = true;
-                }
+            }
             basefile = vm["basefile"].as<std::string>();
-        } 
+        }
         if(vm.count("logfile")) {
-            if(vm["logfile"].as<std::string>() == "log.txt"){
+            if(vm["logfile"].as<std::string>() == "log.txt") {
                 flag_l = true;
-                }
+            }
             logfile = vm["logfile"].as<std::string>();
         }
-        
+
         if(vm.count("PORT")) {
-            if(vm["PORT"].as<int>() == 33333){
+            if(vm["PORT"].as<int>() == 33333) {
                 flag_p = true;
-                }
+            }
             PORT = vm["PORT"].as<int>();
         }
-        
-        if(flag_b and flag_l and flag_p){
+
+        if(flag_b and flag_l and flag_p) {
             std::cout << "Server started with default parameters.Use -h for help"<<std::endl;
-            }
-            
+        }
+
     } catch(po::error& e) {
         std::cerr << "error: " << e.what() << "\n";
         std::cerr << "Use -h for help\n";
@@ -80,7 +80,16 @@ int Interface::comm_proc(int argc, char** argv)
         std::terminate();
     }
     Errors err;
+    Logger debuges;
+    if(debuges.set_path(logfile)==1) {
+        std::cerr<<"Path not found for logfile" << std::endl;
+        std::terminate();
+    }
     Logger l1(logfile);
+    if(l1.writelog(" ")==-1) {
+        std::cerr<<"Path not found for logfile" << std::endl;
+        std::terminate();
+    };
     if(logfile[0] == '/' or logfile=="log.txt") {
         if(logfile != "/home/stud/log.txt") {
             l1.writelog("Path to logfile set value: "+logfile);
@@ -91,15 +100,12 @@ int Interface::comm_proc(int argc, char** argv)
         std::cerr << "Incorrect path to log" << std::endl;
         return 1;
     }
-    if(basefile[0] == '/' or basefile=="base.txt") {
-        if(basefile != "/home/stud/base.txt") {
-            l1.writelog("Path to basefile set value: " + basefile);
-        } else {
-            l1.writelog("Path to basefile set default value");
-        }
+
+
+    if(basefile != "/home/stud/base.txt") {
+        l1.writelog("Path to basefile set value: " + basefile);
     } else {
-        std::cerr << "Incorrect path to basefile" << std::endl;
-        return 1;
+        l1.writelog("Path to basefile set default value");
     }
     if(PORT != 33333) {
         l1.writelog("Port set not default value");
