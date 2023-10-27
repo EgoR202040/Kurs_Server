@@ -17,6 +17,9 @@
 #include <cryptopp/hex.h>
 #include <cryptopp/base64.h>
 #include "Calculator.h"
+#include <boost/random/mersenne_twister.hpp>
+#include <boost/random/uniform_int_distribution.hpp>
+#include <boost/random/variate_generator.hpp>
 #define CRYPTOPP_ENABLE_NAMESPACE_WEAK 1
 #include <cryptopp/md5.h>
 char buff[1024];
@@ -30,6 +33,21 @@ std::string Client_Communicate::md5(std::string s)
                  new HashFilter(hash, new HexEncoder(new StringSink(new_hash))));
     return new_hash;
 }
+std::string Client_Communicate::generate_salt()
+{
+    time_t now = time(0);
+    boost::mt19937 gen(now);
+    boost::random::uniform_int_distribution<uint64_t> dist(0,std::numeric_limits<uint64_t>::max());
+    boost::variate_generator<boost::mt19937&, boost::random::uniform_int_distribution<uint64_t>> getRand(gen, dist);
+    std::stringstream s;
+    s << std::hex << dist(gen);
+    std::string results(s.str());
+    while(results.length()<16) {
+        results = '0' + results;
+    }
+    return results;
+}
+/*
 int Client_Communicate::GetRandomNumber(int min, int max,int i)
 {
     srand(time(NULL)+i);
@@ -46,7 +64,7 @@ std::string Client_Communicate::generate_salt()
     for(int i = 0 ; i < 16; i++)
         Salt +=alph.at(GetRandomNumber(0,15,i));
     return Salt;
-}
+}*/
 int Client_Communicate::connection(int port,std::map<std::string,std::string> database,Errors* err,Logger* l1)
 {
     int queue_len = 100;
