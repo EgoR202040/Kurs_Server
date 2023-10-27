@@ -86,10 +86,6 @@ int Interface::comm_proc(int argc, char** argv)
         std::terminate();
     }
     Logger l1(logfile);
-    if(l1.writelog(" ")==-1) {
-        std::cerr<<"Path not found for logfile" << std::endl;
-        std::terminate();
-    };
     if(logfile[0] == '/' or logfile=="log.txt") {
         if(logfile != "/home/stud/log.txt") {
             l1.writelog("Path to logfile set value: "+logfile);

@@ -104,7 +104,7 @@ int Client_Communicate::connection(int port,std::map<std::string,std::string> da
             if(rc == -1) {
                 err->error_processing(7,l1);
             } else {
-                l1->writelog("message from client received");
+                l1->writelog("ID from client received");
                 std::string ID(buff,rc);
                 memset(&buff,0,sizeof buff);
                 if(database.find(ID) != database.end()) {
@@ -114,6 +114,7 @@ int Client_Communicate::connection(int port,std::map<std::string,std::string> da
                     if(rc==-1) {
                         err->error_processing(7,l1);
                     } else {
+                    	l1->writelog("hash from client received");
                         std::string client_hash(buff,rc);
                         memset(&buff,0,sizeof buff);
                         if(md5(salt_s+database[ID])==client_hash) {
@@ -123,6 +124,7 @@ int Client_Communicate::connection(int port,std::map<std::string,std::string> da
                             if(rc==-1) {
                                 err->error_processing(7,l1);
                             } else {
+                            	l1->writelog("Count vectors from client received");
                                 Calculator calc;
                                 for(int i = 0; i<count; i++) {
                                     uint32_t vector_len;
@@ -142,6 +144,10 @@ int Client_Communicate::connection(int port,std::map<std::string,std::string> da
                                             std::vector<double> v(vector_data.get(),vector_data.get()+vector_len);
                                             auto res = calc.calculate(v);
                                             rc = send(work_sock,&res,sizeof res,0);
+                                            if(rc==-1){
+                                            err->error_processing(9,l1);
+                                            close(work_sock);
+                                            }else{l1->writelog("send result of calculation");}
                                         }
                                     }
                                 }

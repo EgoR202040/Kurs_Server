@@ -37,5 +37,9 @@ void Errors::error_processing(int err,Logger* l)
             std::cerr << "Error: unknown ID" << std::endl;
             l->writelog("Unknown ID received");
         }
+        if(err == 9) {
+            std::cerr << "Error: send result of calculation" << std::endl;
+            l->writelog("Error with send data");
+        }
     }
 }
