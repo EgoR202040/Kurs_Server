@@ -26,7 +26,6 @@ int Connector_to_base::connect_to_base(string base_file)
                 }
             }
             temp_pass.erase(0,1);
-            //std::cout << temp_login << ":" << temp_pass << std::endl;
             data_base[temp_login]= temp_pass;
         }
         return 0;

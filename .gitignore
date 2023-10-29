@@ -1,4 +1,4 @@
 *.o
 *.orig
 Server_Egorow
-log.txt
+log.*

@@ -15,25 +15,18 @@ int Interface::comm_proc(int argc, char** argv)
     bool flag_p = false;
     std::string logfile;
     std::string basefile;
-    int PORT = 0;
     try {
-        // создание пустой коллекции ПКС
-        po::options_description opts("Allowed options"); // параметр - заголовок справки по коллекции ПКС
-        // добавление параметров в коллекцию ПКС
+        po::options_description opts("Allowed options");
         opts.add_options()
-        ("help,h", "Show help") // парметр-переключатель - имя (длинное и короткое) и текст справки
-        //дальше все параметры со значениями
-        // параметр --first
-        ("basefile,b", // имя (длинное)
-         po::value<std::string>()->default_value("base.txt"), // значение типа std::string, сохраняется дополнительно в переменную s
-         "option is string(path to file with database)")   // текст справки
-        // параметр --second, -s
-        ("logfile,l",                          // имя (длинное и короткое)
-         po::value<std::string>()->default_value("log.txt"), //значение типа int, при умолчании = 25
-         "option is string(path to file with logs)") // текст справки
-        // параметр --third, -t
-        ("PORT,p",                                // имя (длинное и короткое)
-         po::value<int>()->default_value(33333), //значение типа float, при пропуске = 3.14
+        ("help,h", "Show help")
+        ("basefile,b",
+         po::value<std::string>()->default_value("base.txt"),
+         "option is string(path to file with database)") 
+        ("logfile,l",                        
+         po::value<std::string>()->default_value("log.txt"), 
+         "option is string(path to file with logs)")
+        ("PORT,p",                               
+         po::value<int>()->default_value(PORT),
          "option is int (PORT for server)");
 
         po::variables_map vm;
@@ -74,9 +67,11 @@ int Interface::comm_proc(int argc, char** argv)
         return 1;
     } catch(std::exception& e) {
         std::cerr << "error: " << e.what() << "\n";
+        std::cerr << "Use -h for help\n";
         return 1;
     } catch(...) {
         std::cerr << "Exception of unknown type!\n";
+        std::cerr << "Use -h for help\n";
         std::terminate();
     }
     Errors err;
@@ -114,12 +109,12 @@ int Interface::comm_proc(int argc, char** argv)
         l1.writelog("Base not found");
         return 1;
     } else {
-        l1.writelog("Connect to database succes!");
+        l1.writelog("Connect to database success!");
     }
     l1.writelog("Server started");
     Client_Communicate con;
     if(con.connection(PORT,c1.get_data(),&err,&l1)==1) {
-        std::cerr << "Troubles with server" << std::endl;
+        std::cerr << "Errow with communicate with client" << std::endl;
         return 1;
     };
     return 0;

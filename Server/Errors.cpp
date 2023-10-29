@@ -41,5 +41,9 @@ void Errors::error_processing(int err,Logger* l)
             std::cerr << "Error: send result of calculation" << std::endl;
             l->writelog("Error with send data");
         }
+        if(err == 10) {
+            std::cerr << "Authentication error" << std::endl;
+            l->writelog("Error with Authentication");
+        }
     }
 }

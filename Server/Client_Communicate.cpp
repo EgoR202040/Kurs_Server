@@ -28,7 +28,6 @@ std::string Client_Communicate::md5(std::string s)
     using namespace CryptoPP;
     Weak::MD5 hash;
     std::string new_hash;
-    //Цепочка преобразований
     StringSource(s, true,
                  new HashFilter(hash, new HexEncoder(new StringSink(new_hash))));
     return new_hash;
@@ -47,24 +46,6 @@ std::string Client_Communicate::generate_salt()
     }
     return results;
 }
-/*
-int Client_Communicate::GetRandomNumber(int min, int max,int i)
-{
-    srand(time(NULL)+i);
-    int num = min + rand() % (max - min + 1);
-    return num;
-}
-
-std::string Client_Communicate::generate_salt()
-{
-    static std::string alph = {
-        "0123456789ABCDEFabcdef"
-    };
-    std::string Salt;
-    for(int i = 0 ; i < 16; i++)
-        Salt +=alph.at(GetRandomNumber(0,15,i));
-    return Salt;
-}*/
 int Client_Communicate::connection(int port,std::map<std::string,std::string> database,Errors* err,Logger* l1)
 {
     int queue_len = 100;
@@ -72,7 +53,6 @@ int Client_Communicate::connection(int port,std::map<std::string,std::string> da
     addr->sin_family = AF_INET;
     addr->sin_port = htons(port);
     inet_aton("127.0.0.1", &addr->sin_addr);
-    //addr->sin_addr.s_addr = inet_addr("127.0.0.1"); - старый метод
     int s = socket(AF_INET, SOCK_STREAM, 0); // TCP
     if (s==-1) {
         err->error_processing(3,l1);
@@ -154,7 +134,7 @@ int Client_Communicate::connection(int port,std::map<std::string,std::string> da
                             }
                         } else {
                             send(work_sock,"ERR",3,0);
-                            err->error_processing(7,l1);
+                            err->error_processing(10,l1);
                             close(work_sock);
                         }
                     }
@@ -165,7 +145,6 @@ int Client_Communicate::connection(int port,std::map<std::string,std::string> da
                 }
             }
         }
-        //close(work_sock);
     }
     return 0;
 }

@@ -2,11 +2,8 @@
 #include "Logger.h"
 #include <string>
 class Interface{
-public:
-friend int Logger::writelog(std::string s);
     int PORT;
-    std::string IP;
-    int ID;
-    Interface(){PORT = 33333;IP = "none";ID = 13;};
+public:
+    Interface(int port=33333):PORT(port){}
     int comm_proc(int argc, char** argv);
 };
