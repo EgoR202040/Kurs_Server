@@ -15,6 +15,10 @@ int Interface::comm_proc(int argc, char** argv)
     bool flag_p = false;
     std::string logfile;
     std::string basefile;
+    //************************************
+    //			Разбор ПКС
+   	//
+   	//************************************
     try {
         po::options_description opts("Allowed options");
         opts.add_options()
@@ -74,6 +78,10 @@ int Interface::comm_proc(int argc, char** argv)
         std::cerr << "Use -h for help\n";
         std::terminate();
     }
+    //************************************
+    //	   Создание объектов классов
+   	//
+   	//************************************
     Errors err;
     Logger debuges;
     if(debuges.set_path(logfile)==1) {

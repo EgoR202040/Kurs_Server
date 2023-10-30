@@ -1,28 +1,43 @@
+//Модули
 #include "Client_Communicate.h"
-#include <netinet/in.h>
 #include "Logger.h"
 #include "Errors.h"
+#include "Calculator.h"
+
+//Сетевое взаимодействие
+#include <arpa/inet.h>
+#include <netinet/in.h>
+#include <sys/socket.h>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/socket.h>
 #include <unistd.h>
-#include <arpa/inet.h>
 #include <iostream>
 #include <string>
 #include <vector>
 #include <stdlib.h>
 #include <time.h>
+
+//Для хеширования
 #include <sstream>
 #include <cryptopp/hex.h>
 #include <cryptopp/base64.h>
-#include "Calculator.h"
+#define CRYPTOPP_ENABLE_NAMESPACE_WEAK 1
+#include <cryptopp/md5.h>
+
+//Буст библиотеки для генерации SALT
 #include <boost/random/mersenne_twister.hpp>
 #include <boost/random/uniform_int_distribution.hpp>
 #include <boost/random/variate_generator.hpp>
-#define CRYPTOPP_ENABLE_NAMESPACE_WEAK 1
-#include <cryptopp/md5.h>
-char buff[1024];
+
+#define buff_size 1024
+
+std::unique_ptr<char[]> buff(new char[buff_size]);
+//************************************
+//			Функция хеширования
+//
+//************************************
 std::string Client_Communicate::md5(std::string s)
 {
     using namespace CryptoPP;
@@ -32,6 +47,10 @@ std::string Client_Communicate::md5(std::string s)
                  new HashFilter(hash, new HexEncoder(new StringSink(new_hash))));
     return new_hash;
 }
+//************************************
+//			Генерация SALT
+//
+//************************************
 std::string Client_Communicate::generate_salt()
 {
     time_t now = time(0);
@@ -46,6 +65,10 @@ std::string Client_Communicate::generate_salt()
     }
     return results;
 }
+//************************************
+//		  Функция соединения
+//
+//************************************
 int Client_Communicate::connection(int port,std::map<std::string,std::string> database,Errors* err,Logger* l1)
 {
     int queue_len = 100;
@@ -72,6 +95,10 @@ int Client_Communicate::connection(int port,std::map<std::string,std::string> da
         err->error_processing(5,l1);
         return 1;
     }
+    //************************************
+	//		 Цикл обработки клиентов
+	//
+	//************************************
     for(;;) {
         sockaddr_in * client_addr = new sockaddr_in;
         socklen_t len = sizeof (sockaddr_in);
@@ -80,23 +107,21 @@ int Client_Communicate::connection(int port,std::map<std::string,std::string> da
             err->error_processing(6,l1);
         } else {
             l1->writelog("Client socket created");
-            rc = recv(work_sock,&buff,sizeof buff,0);
+            rc = recv(work_sock,buff.get(),buff_size,0);
             if(rc == -1) {
                 err->error_processing(7,l1);
             } else {
                 l1->writelog("ID from client received");
-                std::string ID(buff,rc);
-                memset(&buff,0,sizeof buff);
+                std::string ID(buff.get(),rc);
                 if(database.find(ID) != database.end()) {
                     std::string salt_s = generate_salt();
                     send(work_sock,salt_s.c_str(),16,0);
-                    rc = recv(work_sock,&buff,sizeof buff,0);
+                    rc = recv(work_sock,buff.get(),buff_size,0);
                     if(rc==-1) {
                         err->error_processing(7,l1);
                     } else {
                     	l1->writelog("hash from client received");
-                        std::string client_hash(buff,rc);
-                        memset(&buff,0,sizeof buff);
+                        std::string client_hash(buff.get(),rc);
                         if(md5(salt_s+database[ID])==client_hash) {
                             rc = send(work_sock,"OK",2,0);
                             int count;
