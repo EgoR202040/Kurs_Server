@@ -130,7 +130,6 @@ int Client_Communicate::connection(int port,std::map<std::string,std::string> da
                                 err->error_processing(7,l1);
                             } else {
                             	l1->writelog("Count vectors from client received");
-                                Calculator calc;
                                 for(int i = 0; i<count; i++) {
                                     uint32_t vector_len;
                                     rc = recv(work_sock,&vector_len,4,0);
@@ -147,7 +146,8 @@ int Client_Communicate::connection(int port,std::map<std::string,std::string> da
                                             break;
                                         } else {
                                             std::vector<double> v(vector_data.get(),vector_data.get()+vector_len);
-                                            auto res = calc.calculate(v);
+                                            std::unique_ptr<Calculator[]> calc(new Calculator(v));
+                                            auto res = calc.get()->send_res();
                                             rc = send(work_sock,&res,sizeof res,0);
                                             if(rc==-1){
                                             err->error_processing(9,l1);

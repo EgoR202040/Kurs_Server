@@ -3,6 +3,8 @@
 #include <iostream>
 class Calculator
 {
+double results;
 public:
-    double calculate(std::vector<double>input_data);
+    Calculator(std::vector<double>input_data);
+   	double send_res();
 };
