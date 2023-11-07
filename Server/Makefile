@@ -12,6 +12,7 @@ all : $(PROJECT)
 
 $(PROJECT) : $(OBJECTS)
 	$(CXX) $^ $(LDFLAGS) -o $@
+	rm -f *.o *.orig
 
 %.o : %.cpp
 	$(CXX) -c $(CXXFLAGS) $< -o $@
