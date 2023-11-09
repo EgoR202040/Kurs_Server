@@ -7,7 +7,7 @@ class Logger
    
 public:
     int writelog(std::string s);
-     int set_path(std::string path_file);
+    int set_path(std::string path_file);
     Logger(){path_to_logfile = " ";};
     Logger(std::string s){path_to_logfile = s;};
 };

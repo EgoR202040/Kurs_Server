@@ -64,20 +64,6 @@ int Interface::comm_proc(int argc, char** argv)
         if(flag_b and flag_l and flag_p) {
             std::cout << "Server started with default parameters.Use -h for help"<<std::endl;
         }
-
-    } catch(po::error& e) {
-        std::cerr << "error: " << e.what() << "\n";
-        std::cerr << "Use -h for help\n";
-        return 1;
-    } catch(std::exception& e) {
-        std::cerr << "error: " << e.what() << "\n";
-        std::cerr << "Use -h for help\n";
-        return 1;
-    } catch(...) {
-        std::cerr << "Exception of unknown type!\n";
-        std::cerr << "Use -h for help\n";
-        std::terminate();
-    }
     //************************************
     //	   Создание объектов классов
    	//
@@ -86,7 +72,7 @@ int Interface::comm_proc(int argc, char** argv)
     Logger debuges;
     if(debuges.set_path(logfile)==1) {
         std::cerr<<"Path not found for logfile" << std::endl;
-        std::terminate();
+        throw std::invalid_argument("path to logfile incorrect");
     }
     Logger l1(logfile);
     if(logfile[0] == '/' or logfile=="log.txt") {
@@ -96,8 +82,7 @@ int Interface::comm_proc(int argc, char** argv)
             l1.writelog("Path to logfile set default value");
         }
     } else {
-        std::cerr << "Incorrect path to log" << std::endl;
-        return 1;
+        throw std::invalid_argument("path to logfile incorrect");
     }
 
 
@@ -113,9 +98,8 @@ int Interface::comm_proc(int argc, char** argv)
     }
     Connector_to_base c1;
     if(c1.connect_to_base(basefile)==1) {
-        err.error_processing(1,&l1);
         l1.writelog("Base not found");
-        return 1;
+        throw std::invalid_argument("path to basefile");
     } else {
         l1.writelog("Connect to database success!");
     }
@@ -125,5 +109,21 @@ int Interface::comm_proc(int argc, char** argv)
         std::cerr << "Errow with communicate with client" << std::endl;
         return 1;
     };
-    return 0;
+    return 0;}catch(po::error& e) {
+        std::cerr << "error: " << e.what() << "\n";
+        std::cerr << "Use -h for help\n";
+        return 1;
+    }catch(std::invalid_argument &err){
+    	std::cerr <<"error: " << err.what() << "\n";
+    	std::cerr << "Use -h for help\n";
+    	return 1;
+    } catch(std::exception& e) {
+        std::cerr << "error: " << e.what() << "\n";
+        std::cerr << "Use -h for help\n";
+        return 1;
+    } catch(...) {
+        std::cerr << "Exception of unknown type!\n";
+        std::cerr << "Use -h for help\n";
+        std::terminate();
+    }
 }
