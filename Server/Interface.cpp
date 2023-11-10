@@ -63,7 +63,23 @@ int Interface::comm_proc(int argc, char** argv)
 
         if(flag_b and flag_l and flag_p) {
             std::cout << "Server started with default parameters.Use -h for help"<<std::endl;
-        }
+        }}catch(po::error& e) {
+        std::cerr << "error: " << e.what() << "\n";
+        std::cerr << "Use -h for help\n";
+        return 1;
+    }catch(std::invalid_argument &err){
+    	std::cerr <<"error: " << err.what() << "\n";
+    	std::cerr << "Use -h for help\n";
+    	return 1;
+    } catch(std::exception& e) {
+        std::cerr << "error: " << e.what() << "\n";
+        std::cerr << "Use -h for help\n";
+        return 1;
+    } catch(...) {
+        std::cerr << "Exception of unknown type!\n";
+        std::cerr << "Use -h for help\n";
+        std::terminate();
+    }
     //************************************
     //	   Создание объектов классов
    	//
@@ -109,21 +125,5 @@ int Interface::comm_proc(int argc, char** argv)
         std::cerr << "Errow with communicate with client" << std::endl;
         return 1;
     };
-    return 0;}catch(po::error& e) {
-        std::cerr << "error: " << e.what() << "\n";
-        std::cerr << "Use -h for help\n";
-        return 1;
-    }catch(std::invalid_argument &err){
-    	std::cerr <<"error: " << err.what() << "\n";
-    	std::cerr << "Use -h for help\n";
-    	return 1;
-    } catch(std::exception& e) {
-        std::cerr << "error: " << e.what() << "\n";
-        std::cerr << "Use -h for help\n";
-        return 1;
-    } catch(...) {
-        std::cerr << "Exception of unknown type!\n";
-        std::cerr << "Use -h for help\n";
-        std::terminate();
-    }
+    return 0;
 }

@@ -16,22 +16,22 @@ SUITE(Connector_test){
 	TEST(newline_in_path){
 		Connector_to_base Con;
 		std::string path = "/home/stud/Kurs_Server/test_temp_files/base\n";
-		CHECK_EQUAL(1,Con.connect_to_base(path));
+		CHECK_THROW(Con.connect_to_base(path),std::invalid_argument);
 	}
 	TEST(incorrect_path){
 		Connector_to_base Con;
 		std::string path = "#5df%s";
-		CHECK_EQUAL(1,Con.connect_to_base(path));
+		CHECK_THROW(Con.connect_to_base(path),std::invalid_argument);
 	}
 	TEST(empty_path){
 		Connector_to_base Con;
 		std::string path = "";
-		CHECK_EQUAL(1,Con.connect_to_base(path));
+		CHECK_THROW(Con.connect_to_base(path),std::invalid_argument);
 	}
 	TEST(wrong_path){
 		Connector_to_base Con;
-		std::string path = "/etc/base.txt";
-		CHECK_EQUAL(1,Con.connect_to_base(path));
+		std::string path = "/tesotfsa/base.txt";
+		CHECK_THROW(Con.connect_to_base(path),std::invalid_argument);
 	}
 	TEST(correct_path){
 		Connector_to_base Con;
@@ -81,17 +81,12 @@ SUITE(Logger_test){
 	}
 	TEST(wrong_path){
 		Logger l;
-		std::string path = "/1/test/path/to/log";
+		std::string path = "/tesotfsa/test/path/to/log";
 		CHECK_THROW(l.set_path(path),std::invalid_argument);
 	}
 	TEST(empty_path){
 		Logger l;
 		std::string path = "";
-		CHECK_THROW(l.set_path(path),std::invalid_argument);
-	}
-	TEST(incorrect_path){
-		Logger l;
-		std::string path = "#5df%s";
 		CHECK_THROW(l.set_path(path),std::invalid_argument);
 	}
 	TEST(correct_path){

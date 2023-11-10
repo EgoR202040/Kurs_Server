@@ -30,6 +30,6 @@ int Connector_to_base::connect_to_base(string base_file)
         }
         return 0;
     } else {
-        return 1;
+        throw std::invalid_argument("invalid base path");
     }
 };
