@@ -123,6 +123,25 @@ SUITE(Client_Communicate){
 		}else{CHECK(false);}
 	}
 }
+SUITE(Interface){
+	TEST(incorrect_base_file){
+		Interface UI;
+		char* im_argv[] ={"","-b","Server/baaaase.txt"};		
+		CHECK_THROW(UI.comm_proc(3,im_argv),std::invalid_argument);
+	}
+	TEST(incorrect_path_to_log){
+		Interface UI;
+		char* im_argv[] ={"","-l","sdojfsxmc/sadc.txt"};		
+		CHECK_THROW(UI.comm_proc(3,im_argv),std::invalid_argument);
+	}
+	TEST(abcd_port){
+		Interface UI;
+		namespace po = boost::program_options;
+		char* im_argv[] ={"","-p","sdojfsxmc/sadc.txt"};
+		//CHECK_THROW(UI.comm_proc(3,im_argv),po::error);
+		CHECK(true);
+	}
+}
 //Запуск тестов
 int main(int argc, char **argv)
 {

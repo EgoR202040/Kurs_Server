@@ -67,7 +67,7 @@ int Interface::comm_proc(int argc, char** argv)
         std::cerr << "error: " << e.what() << "\n";
         std::cerr << "Use -h for help\n";
         return 1;
-    }catch(std::invalid_argument &err){
+    }catch(std::invalid_argument &err){    	
     	std::cerr <<"error: " << err.what() << "\n";
     	std::cerr << "Use -h for help\n";
     	return 1;

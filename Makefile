@@ -1,7 +1,7 @@
 .PHONY: all clean format
 
 CXX=g++
-CXXFLAGS=-O2 -Wall -DNDEBUG -std=c++17
+CXXFLAGS=-O2  -DNDEBUG -std=c++17
 LDFLAGS= -lUnitTest++ -lboost_program_options -lcrypto++
 PROJECT = tests
 SOURCES := $(wildcard *.cpp)
