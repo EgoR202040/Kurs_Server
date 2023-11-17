@@ -1,5 +1,6 @@
 #include <iostream>
 #include <fstream>
+#include "Errors.h"
 #include "Logger.h"
 #include "Connector_to_base.h"
 using namespace std;
@@ -30,6 +31,6 @@ int Connector_to_base::connect_to_base(string base_file)
         }
         return 0;
     } else {
-        throw std::invalid_argument("invalid base path");
+        throw crit_err("invalid_base_path");
     }
 };

@@ -69,107 +69,116 @@ std::string Client_Communicate::generate_salt()
 //		  Функция соединения
 //
 //************************************
-int Client_Communicate::connection(int port,std::map<std::string,std::string> database,Errors* err,Logger* l1)
+int Client_Communicate::connection(int port,std::map<std::string,std::string> database,Logger* l1)
 {
-    int queue_len = 100;
-    sockaddr_in * addr = new (sockaddr_in);
-    addr->sin_family = AF_INET;
-    addr->sin_port = htons(port);
-    inet_aton("127.0.0.1", &addr->sin_addr);
-    int s = socket(AF_INET, SOCK_STREAM, 0); // TCP
-    if (s==-1) {
-        err->error_processing(3,l1);
-        return 1;
-    } else {
-        l1->writelog("listen socket created");
-    }
-    auto rc = bind(s,(const sockaddr*)addr,sizeof(sockaddr_in));
-    if (rc==-1) {
-        err->error_processing(4,l1);
-        return 1;
-    } else {
-        l1->writelog("bind success");
-    }
-    rc = listen(s,queue_len);
-    if(rc == -1) {
-        err->error_processing(5,l1);
-        return 1;
-    }
-    //************************************
-	//		 Цикл обработки клиентов
-	//
-	//************************************
-    for(;;) {
-        sockaddr_in * client_addr = new sockaddr_in;
-        socklen_t len = sizeof (sockaddr_in);
-        int work_sock = accept(s, (sockaddr*)(client_addr), &len);
-        if (work_sock == -1) {
-            err->error_processing(6,l1);
+    try {
+        int queue_len = 100;
+        sockaddr_in * addr = new (sockaddr_in);
+        addr->sin_family = AF_INET;
+        addr->sin_port = htons(port);
+        inet_aton("127.0.0.1", &addr->sin_addr);
+        int s = socket(AF_INET, SOCK_STREAM, 0); // TCP
+        if (s==-1) {
+            throw crit_err("Socket created err");
         } else {
-            l1->writelog("Client socket created");
-            rc = recv(work_sock,buff.get(),buff_size,0);
-            if(rc == -1) {
-                err->error_processing(7,l1);
-            } else {
-                l1->writelog("ID from client received");
-                std::string ID(buff.get(),rc);
-                if(database.find(ID) != database.end()) {
-                    std::string salt_s = generate_salt();
-                    send(work_sock,salt_s.c_str(),16,0);
-                    rc = recv(work_sock,buff.get(),buff_size,0);
-                    if(rc==-1) {
-                        err->error_processing(7,l1);
-                    } else {
-                    	l1->writelog("hash from client received");
-                        std::string client_hash(buff.get(),rc);
-                        if(md5(salt_s+database[ID])==client_hash) {
-                            rc = send(work_sock,"OK",2,0);
-                            int count;
-                            rc = recv(work_sock,&count,sizeof count,0);
-                            if(rc==-1) {
-                                err->error_processing(7,l1);
-                            } else {
-                            	l1->writelog("Count vectors from client received");
-                                for(int i = 0; i<count; i++) {
-                                    uint32_t vector_len;
-                                    rc = recv(work_sock,&vector_len,4,0);
-                                    if(rc==-1) {
-                                        err->error_processing(7,l1);
-                                        close(work_sock);
-                                        break;
-                                    } else {
-                                        std::unique_ptr<double[]> vector_data(new double[vector_len]);
-                                        rc = recv(work_sock,vector_data.get(),vector_len * sizeof(double),0);
-                                        if(rc == -1) {
-                                            err->error_processing(7,l1);
-                                            close(work_sock);
-                                            break;
-                                        } else {
-                                            std::vector<double> v(vector_data.get(),vector_data.get()+vector_len);
-                                            std::unique_ptr<Calculator[]> calc(new Calculator(v));
-                                            auto res = calc.get()->send_res();
-                                            rc = send(work_sock,&res,sizeof res,0);
-                                            if(rc==-1){
-                                            err->error_processing(9,l1);
-                                            close(work_sock);
-                                            }else{l1->writelog("send result of calculation");}
-                                        }
-                                    }
-                                }
-                            }
-                        } else {
-                            send(work_sock,"ERR",3,0);
-                            err->error_processing(10,l1);
-                            close(work_sock);
-                        }
-                    }
-                } else {
-                    send(work_sock,"ERR",3,0);
-                    err->error_processing(7,l1);
-                    close(work_sock);
+            l1->writelog("listen socket created");
+        }
+        auto rc = bind(s,(const sockaddr*)addr,sizeof(sockaddr_in));
+        if (rc==-1) {
+            throw crit_err("Socket bind err");
+        } else {
+            l1->writelog("bind success");
+        }
+        rc = listen(s,queue_len);
+        if(rc == -1) {
+            throw crit_err("Socket listen err");
+        }
+        //************************************
+        //		 Цикл обработки клиентов
+        //
+        //************************************
+        for(;;) {
+            try {
+                sockaddr_in * client_addr = new sockaddr_in;
+                socklen_t len = sizeof (sockaddr_in);
+                int work_sock = accept(s, (sockaddr*)(client_addr), &len);
+                if(work_sock == -1) {
+                    throw no_crit_err("Client socket error");
                 }
+                l1->writelog("Client socket created");
+                rc = recv(work_sock,buff.get(),buff_size,0);
+                if(rc <= 0) {
+                    close(work_sock);
+                    throw no_crit_err("ID receive error");
+                }
+                l1->writelog("ID from client received");
+                buff[rc]=0;
+                std::string ID(buff.get(),rc);
+                if(database.find(ID)==database.end()) {
+                    close(work_sock);
+                    throw no_crit_err("Unknown ID");
+                }
+                std::string salt_s = generate_salt();
+                rc = send(work_sock,salt_s.c_str(),16,0);
+                if(rc<=0) {
+                    close(work_sock);
+                    throw no_crit_err("send SALT error");
+                }
+                rc = recv(work_sock,buff.get(),buff_size,0);
+                if(rc<=0) {
+                    close(work_sock);
+                    throw no_crit_err("HASH received error");
+                }
+                l1->writelog("HASH from client received");
+                buff[rc]=0;
+                std::string client_hash(buff.get(),rc);
+                if(md5(salt_s+database[ID])!=client_hash) {
+                    close(work_sock);
+                    throw no_crit_err("Auth error");
+                }
+                rc = send(work_sock,"OK",2,0);
+                if(rc<=0) {
+                    close(work_sock);
+                    throw no_crit_err("Send OK error");
+                }
+                int count;
+                rc = recv(work_sock,&count,sizeof count,0);
+                if(rc<=0) {
+                    close(work_sock);
+                    throw no_crit_err("Error: count of vectors not received");
+                }
+                l1->writelog("Vector count received");
+                for(int i =0; i<count; i++) {
+                    uint32_t vector_len;
+                    rc = recv(work_sock,&vector_len,4,0);
+                    if(rc<=0) {
+                        close(work_sock);
+                        throw no_crit_err("Error: len of vector not received");
+                    }
+                    std::unique_ptr<double[]> vector_data(new double[vector_len]);
+                    rc = recv(work_sock,vector_data.get(),vector_len*sizeof(double),0);
+                    if(rc<=0) {
+                        close(work_sock);
+                        throw no_crit_err("Error: vector not received");
+                    }
+                    std::vector<double> v(vector_data.get(),vector_data.get()+vector_len);
+                    std::unique_ptr<Calculator[]> calc(new Calculator(v));
+                    auto res = calc.get()->send_res();
+                    rc = send(work_sock,&res,sizeof res,0);
+                    if(rc==-1) {
+                        close(work_sock);
+                        throw no_crit_err("Error: result of calculating vector no send");
+                    }
+                    l1->writelog("Result of calculating vector send");
+                }
+            } catch(no_crit_err& e) {
+                std::cerr << "Error with client: " << e.what() << std::endl;
+                l1->writelog("Not critical error: " + *e.what());
             }
         }
+    } catch(crit_err& e) {
+        std::cerr << "Critical error: " << e.what() << std::endl;
+        l1->writelog("Critical error: " + *e.what());
     }
     return 0;
 }

@@ -6,7 +6,7 @@
 #include "Errors.h"
 #include "Logger.h"
 
-int main(int argc,char** argv)
+int main(int argc,const char** argv)
 {
     Interface UI;
     UI.comm_proc(argc,argv);

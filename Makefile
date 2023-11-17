@@ -3,7 +3,7 @@
 CXX=g++
 CXXFLAGS=-O2  -DNDEBUG -std=c++17
 LDFLAGS= -lUnitTest++ -lboost_program_options -lcrypto++
-PROJECT = tests
+PROJECT = u_test
 SOURCES := $(wildcard *.cpp)
 HEADERS := $(wildcard *.h)
 OBJECTS := $(SOURCES:%.cpp=%.o)
@@ -21,7 +21,8 @@ $(OBJECTS) : $(HEADERS)
 
 format:
 	astyle *.cpp *.h
-	
+run:
+	./$(PROJECT)
 clean:
 	rm -f $(PROJECT) *.o *.orig
 

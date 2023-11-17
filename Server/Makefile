@@ -2,7 +2,7 @@
 
 CXX=g++
 CXXFLAGS=-O2 -Wall -DNDEBUG -std=c++17
-LDFLAGS= -lcryptopp -lboost_program_options
+LDFLAGS= -lcryptopp -lboost_program_options -lUnitTest++
 PROJECT = Server_Egorow
 SOURCES := $(wildcard *.cpp)
 HEADERS := $(wildcard *.h)
@@ -21,7 +21,8 @@ $(OBJECTS) : $(HEADERS)
 
 format:
 	astyle *.cpp *.h
-	
+test:
+	./u_test
 clean:
 	rm -f $(PROJECT) *.o *.orig
 

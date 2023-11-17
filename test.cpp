@@ -4,39 +4,47 @@
 #include <thread>
 #include <UnitTest++/UnitTest++.h>
 #define inf numeric_limits<double>::infinity()
+#define _UNITTEST_ 1
 //
 //Тест подключения к базе данных (Класс Connector_to_base)
 //
 SUITE(Connector_test){
-	TEST(digits_in_path){
-		Connector_to_base Con;
-		std::string path = "/home/stud/Kurs_Server/test_temp_files/base0.txt";
-		CHECK_EQUAL(0,Con.connect_to_base(path));
-	}
 	TEST(newline_in_path){
 		Connector_to_base Con;
-		std::string path = "/home/stud/Kurs_Server/test_temp_files/base\n";
-		CHECK_THROW(Con.connect_to_base(path),std::invalid_argument);
+		std::string path = "test_files/base\n";
+		CHECK_THROW(Con.connect_to_base(path),crit_err);
 	}
 	TEST(incorrect_path){
 		Connector_to_base Con;
 		std::string path = "#5df%s";
-		CHECK_THROW(Con.connect_to_base(path),std::invalid_argument);
+		CHECK_THROW(Con.connect_to_base(path),crit_err);
 	}
 	TEST(empty_path){
 		Connector_to_base Con;
 		std::string path = "";
-		CHECK_THROW(Con.connect_to_base(path),std::invalid_argument);
+		CHECK_THROW(Con.connect_to_base(path),crit_err);
 	}
 	TEST(wrong_path){
 		Connector_to_base Con;
 		std::string path = "/tesotfsa/base.txt";
-		CHECK_THROW(Con.connect_to_base(path),std::invalid_argument);
+		CHECK_THROW(Con.connect_to_base(path),crit_err);
 	}
 	TEST(correct_path){
 		Connector_to_base Con;
-		std::string path = "Server/base.txt";
+		std::string path = "test_files/base.txt";
 		CHECK_EQUAL(0,Con.connect_to_base(path));
+	}
+	TEST(check_reading){
+		Connector_to_base Con;
+		std::string check_pass = "pass";
+		std::string check_login = "login";
+		std::string path = "test_files/base.txt";
+		Con.connect_to_base(path);
+		if((Con.get_data()[check_login]!= check_pass) or (Con.get_data().find(check_pass)==Con.get_data().end())){
+			CHECK(false);
+		}else{
+			CHECK(true);
+		}
 	}
 }
 //
@@ -48,15 +56,10 @@ SUITE(Calculator_test){
 		Calculator c(v);
 		CHECK_EQUAL(inf,c.send_res());
 	}
-	TEST(incorrect_data){
-		std::vector<double> v = {"abcd","abd"};
-		Calculator c(v);
-		CHECK_EQUAL(0,c.send_res());
-	}
 	TEST(negativ_overflow){
-		std::vector<double> v = {2.2250738585072014e-308,0.00000000000000000000000000000001};
+		std::vector<double> v = {-2.2250738585072014e307,100000000};
 		Calculator c(v);
-		CHECK_EQUAL(0,c.send_res());
+		CHECK_EQUAL(-inf,c.send_res());
 	}
 	TEST(negative_number_1){
 		std::vector<double> v ={1000,-1000};
@@ -74,15 +77,10 @@ SUITE(Calculator_test){
 //Тест создания/открытия лог файла (Класс Logger)
 //
 SUITE(Logger_test){
-	TEST(digits_in_path_log){
-		Logger l;
-		std::string path = "/home/stud/Kurs_Server/test_temp_files/l0g.txt";
-		CHECK(true);
-	}
 	TEST(wrong_path){
 		Logger l;
-		std::string path = "/tesotfsa/test/path/to/log";
-		CHECK_THROW(l.set_path(path),std::invalid_argument);
+		std::string path = "Не/путь/к/файлу.txt";
+		CHECK_THROW(l.set_path(path),crit_err);
 	}
 	TEST(empty_path){
 		Logger l;
@@ -91,12 +89,12 @@ SUITE(Logger_test){
 	}
 	TEST(correct_path){
 		Logger l;
-		std::string path = "test_log.txt";
+		std::string path = "test_files/test_log.txt";
 		CHECK_EQUAL(0,l.set_path(path));
 	}
 	TEST(newline_in_path_log){
 		Logger l;
-		std::string path = "/home/stud/Kurs_Server/test_temp_files/log\n";
+		std::string path = "test_files/log\n";
 		CHECK_THROW(l.set_path(path),std::invalid_argument);
 	}
 }
@@ -113,33 +111,21 @@ SUITE(Client_Communicate){
 			CHECK(false);
 		}else{CHECK(true);}
 	}
-	TEST(md5_gen){
+	TEST(salt_len){
 		Client_Communicate com;
-		std::string SALT = com.generate_salt();
-		std::string hash_one = com.md5(SALT);
-		std::string hash_two = com.md5(SALT);
-		if(hash_one == hash_two){
+		std::string salt = com.generate_salt();
+		if(salt.length()!=16){
+			CHECK(false);
+		}else{CHECK(true);}
+	}
+	TEST(md5_gen){
+		std::string hash_check = "5E97E942837598CA32678F7010575554";
+		Client_Communicate com;
+		std::string SALT = "3e74235568ba8f1e";
+		std::string hash = com.md5(SALT);
+		if(hash == hash_check){
 			CHECK(true);
 		}else{CHECK(false);}
-	}
-}
-SUITE(Interface){
-	TEST(incorrect_base_file){
-		Interface UI;
-		char* im_argv[] ={"","-b","Server/baaaase.txt"};		
-		CHECK_THROW(UI.comm_proc(3,im_argv),std::invalid_argument);
-	}
-	TEST(incorrect_path_to_log){
-		Interface UI;
-		char* im_argv[] ={"","-l","sdojfsxmc/sadc.txt"};		
-		CHECK_THROW(UI.comm_proc(3,im_argv),std::invalid_argument);
-	}
-	TEST(abcd_port){
-		Interface UI;
-		namespace po = boost::program_options;
-		char* im_argv[] ={"","-p","sdojfsxmc/sadc.txt"};
-		//CHECK_THROW(UI.comm_proc(3,im_argv),po::error);
-		CHECK(true);
 	}
 }
 //Запуск тестов

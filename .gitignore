@@ -2,5 +2,8 @@
 *.orig
 Server_Egorow
 log.*
+l0g.txt
+base.txt
+test_log.txt
 .vscode
-tests
+u_test

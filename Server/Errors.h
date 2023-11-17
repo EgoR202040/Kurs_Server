@@ -1,7 +1,14 @@
 #pragma once
-#include "Logger.h"
-class Errors
+#include <system_error>
+#include <stdexcept>
+#include <string>
+class crit_err:public std::runtime_error
 {
 public:
-    void error_processing(int err,Logger* l);
+	crit_err(const std::string& s):std::runtime_error(s){}
+};
+class no_crit_err:public std::runtime_error
+{
+public:
+	no_crit_err(const std::string s): std::runtime_error(s){}
 };
