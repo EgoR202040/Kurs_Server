@@ -124,7 +124,7 @@ int Client_Communicate::connection(int port,std::map<std::string,std::string> da
                     close(work_sock);
                     throw no_crit_err("send SALT error");
                 }
-                rc = recv(work_sock,buff.get(),buff_size,0);
+                rc = recv(work_sock,buff.get(),32,0);
                 if(rc<=0) {
                     close(work_sock);
                     throw no_crit_err("HASH received error");
@@ -172,12 +172,10 @@ int Client_Communicate::connection(int port,std::map<std::string,std::string> da
                     l1->writelog("Result of calculating vector send");
                 }
             } catch(no_crit_err& e) {
-                //std::cerr << "Error with client: " << e.what() << std::endl;
                 l1->writelog("Not critical error: " + *e.what());
             }
         }
     } catch(crit_err& e) {
-        //std::cerr << "Critical error: " << e.what() << std::endl;
         l1->writelog("Critical error: " + *e.what());
     }
     return 0;
