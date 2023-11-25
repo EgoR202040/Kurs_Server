@@ -78,19 +78,19 @@ int Client_Communicate::connection(int port,std::map<std::string,std::string> da
         addr->sin_port = htons(port);
         inet_aton("127.0.0.1", &addr->sin_addr);
         int s = socket(AF_INET, SOCK_STREAM, 0); // TCP
-        if (s==-1) {
+        if (s<=0) {
             throw crit_err("Socket created err");
         } else {
             l1->writelog("listen socket created");
         }
         auto rc = bind(s,(const sockaddr*)addr,sizeof(sockaddr_in));
-        if (rc==-1) {
+        if (rc == -1) {
             throw crit_err("Socket bind err");
         } else {
             l1->writelog("bind success");
         }
         rc = listen(s,queue_len);
-        if(rc == -1) {
+        if(rc ==-1) {
             throw crit_err("Socket listen err");
         }
         //************************************
@@ -102,7 +102,7 @@ int Client_Communicate::connection(int port,std::map<std::string,std::string> da
                 sockaddr_in * client_addr = new sockaddr_in;
                 socklen_t len = sizeof (sockaddr_in);
                 int work_sock = accept(s, (sockaddr*)(client_addr), &len);
-                if(work_sock == -1) {
+                if(work_sock <= 0) {
                     throw no_crit_err("Client socket error");
                 }
                 l1->writelog("Client socket created");
@@ -165,19 +165,19 @@ int Client_Communicate::connection(int port,std::map<std::string,std::string> da
                     std::unique_ptr<Calculator[]> calc(new Calculator(v));
                     auto res = calc.get()->send_res();
                     rc = send(work_sock,&res,sizeof res,0);
-                    if(rc==-1) {
+                    if(rc <= 0) {
                         close(work_sock);
-                        throw no_crit_err("Error: result of calculating vector no send");
+                        throw no_crit_err("Error: result of calculating vector not send");
                     }
                     l1->writelog("Result of calculating vector send");
                 }
             } catch(no_crit_err& e) {
-                std::cerr << "Error with client: " << e.what() << std::endl;
+                //std::cerr << "Error with client: " << e.what() << std::endl;
                 l1->writelog("Not critical error: " + *e.what());
             }
         }
     } catch(crit_err& e) {
-        std::cerr << "Critical error: " << e.what() << std::endl;
+        //std::cerr << "Critical error: " << e.what() << std::endl;
         l1->writelog("Critical error: " + *e.what());
     }
     return 0;

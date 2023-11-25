@@ -67,18 +67,14 @@ int Interface::comm_proc(int argc, const char** argv)
 	if(flag_b and flag_l and flag_p) {
         std::cout << "Server started with default parameters.Use -h for help"<<std::endl;
         }
-    Logger debuges;
-	debuges.set_path(logfile);
+    //Logger debuges;
+	//debuges.set_path(logfile);
     Logger l1(logfile);
-    if(logfile[0] == '/' or logfile=="log.txt") {
         if(logfile != "/home/stud/log.txt") {
             l1.writelog("Path to logfile set value: "+logfile);
         } else {
             l1.writelog("Path to logfile set default value");
         }
-    } else {
-        throw crit_err("path to logfile incorrect");
-    }
     if(basefile != "/home/stud/base.txt") {
         l1.writelog("Path to basefile set value: " + basefile);
     } else {

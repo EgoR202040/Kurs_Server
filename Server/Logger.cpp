@@ -30,6 +30,8 @@ int Logger::writelog(std::string s)
     if(filelog.is_open()) {
         std::string time = getCurrentDateTime("now");
         filelog << time<<' '<< s << std::endl;
-        return 0;
-    }else{return 1;}
+    }else{
+		throw crit_err("path to log not exist");
+}
+    return 0;
 }
