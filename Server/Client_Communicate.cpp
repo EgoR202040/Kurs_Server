@@ -38,12 +38,12 @@ std::unique_ptr<char[]> buff(new char[buff_size]);
 //			Функция хеширования
 //
 //************************************
-std::string Client_Communicate::md5(std::string s)
+std::string Client_Communicate::md5(std::string input_str)
 {
     using namespace CryptoPP;
     Weak::MD5 hash;
     std::string new_hash;
-    StringSource(s, true,
+    StringSource(input_str, true,
                  new HashFilter(hash, new HexEncoder(new StringSink(new_hash))));
     return new_hash;
 }

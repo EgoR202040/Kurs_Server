@@ -13,6 +13,7 @@ int Interface::comm_proc(int argc, const char** argv)
     bool flag_b = false;
     bool flag_l = false;
     bool flag_p = false;
+    int PORT;
     std::string logfile;
     std::string basefile;
     //************************************
@@ -24,13 +25,13 @@ int Interface::comm_proc(int argc, const char** argv)
         opts.add_options()
         ("help,h", "Show help")
         ("basefile,b",
-         po::value<std::string>()->default_value("base.txt"),
+         po::value<std::string>()->default_value("/home/stud/base/base.txt"),
          "option is string(path to file with database)") 
         ("logfile,l",                        
-         po::value<std::string>()->default_value("log.txt"), 
+         po::value<std::string>()->default_value("/home/stud/log/log.txt"), 
          "option is string(path to file with logs)")
         ("PORT,p",                               
-         po::value<int>()->default_value(PORT),
+         po::value<int>(&PORT)->default_value(33333),
          "option is int (PORT for server)");
 
         po::variables_map vm;
@@ -42,13 +43,13 @@ int Interface::comm_proc(int argc, const char** argv)
         }
 
         if(vm.count("basefile")) {
-            if(vm["basefile"].as<std::string>() == "base.txt") {
+            if(vm["basefile"].as<std::string>() == "/home/stud/base/base.txt") {
                 flag_b = true;
             }
             basefile = vm["basefile"].as<std::string>();
         }
         if(vm.count("logfile")) {
-            if(vm["logfile"].as<std::string>() == "log.txt") {
+            if(vm["logfile"].as<std::string>() == "/home/stud/log/log.txt") {
                 flag_l = true;
             }
             logfile = vm["logfile"].as<std::string>();
@@ -67,8 +68,6 @@ int Interface::comm_proc(int argc, const char** argv)
 	if(flag_b and flag_l and flag_p) {
         std::cout << "Server started with default parameters.Use -h for help"<<std::endl;
         }
-    //Logger debuges;
-	//debuges.set_path(logfile);
     Logger l1(logfile);
         if(logfile != "/home/stud/log.txt") {
             l1.writelog("Path to logfile set value: "+logfile);
