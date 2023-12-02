@@ -1,0 +1,58 @@
+\hypertarget{classInterface}{}\doxysubsection{Класс Interface}
+\label{classInterface}\index{Interface@{Interface}}
+
+
+Класс для разбора параметров командной строки  
+
+
+
+
+{\ttfamily \#include $<$Interface.\+h$>$}
+
+\doxysubsubsection*{Открытые члены}
+\begin{DoxyCompactItemize}
+\item 
+int \mbox{\hyperlink{classInterface_af5d15169cdf6850a935a01301e16f21b}{comm\+\_\+proc}} (int argc, const char $\ast$$\ast$argv)
+\begin{DoxyCompactList}\small\item\em Функция для разбора ПКС \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Закрытые данные}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classInterface_a3a92a1cda8aa0d051a8d80f6e07e2cbc}\label{classInterface_a3a92a1cda8aa0d051a8d80f6e07e2cbc}} 
+int \mbox{\hyperlink{classInterface_a3a92a1cda8aa0d051a8d80f6e07e2cbc}{PORT}}
+\begin{DoxyCompactList}\small\item\em Порт работы сервера \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsubsection{Подробное описание}
+Класс для разбора параметров командной строки 
+
+Разбор ПКС происходит в методе comm\+\_\+proc 
+
+\doxysubsubsection{Методы}
+\mbox{\Hypertarget{classInterface_af5d15169cdf6850a935a01301e16f21b}\label{classInterface_af5d15169cdf6850a935a01301e16f21b}} 
+\index{Interface@{Interface}!comm\_proc@{comm\_proc}}
+\index{comm\_proc@{comm\_proc}!Interface@{Interface}}
+\doxyparagraph{\texorpdfstring{comm\_proc()}{comm\_proc()}}
+{\footnotesize\ttfamily int Interface\+::comm\+\_\+proc (\begin{DoxyParamCaption}\item[{int}]{argc,  }\item[{const char $\ast$$\ast$}]{argv }\end{DoxyParamCaption})}
+
+
+
+Функция для разбора ПКС 
+
+
+\begin{DoxyParams}[1]{Аргументы}
+\mbox{\texttt{ in}}  & {\em argc} & Количество параметров в командной строке \\
+\hline
+\mbox{\texttt{ in}}  & {\em argv} & Массив с параметрами командной строки \\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyExceptions}{Исключения}
+{\em boost\+::program\+\_\+options\+::error} & \\
+\hline
+\end{DoxyExceptions}
+
+
+Объявления и описания членов классов находятся в файлах\+:\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{Interface_8h}{Interface.\+h}}\item 
+Interface.\+cpp\end{DoxyCompactItemize}

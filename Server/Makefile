@@ -21,8 +21,8 @@ $(OBJECTS) : $(HEADERS)
 
 format:
 	astyle *.cpp *.h
-test:
-	./u_test
+doxy:
+	doxygen
 clean:
 	rm -f $(PROJECT) *.o *.orig
 

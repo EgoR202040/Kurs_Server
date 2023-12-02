@@ -1,0 +1,57 @@
+\hypertarget{classCalculator}{}\doxysubsection{Класс Calculator}
+\label{classCalculator}\index{Calculator@{Calculator}}
+
+
+Класс для операции умножение вектора  
+
+
+
+
+{\ttfamily \#include $<$Calculator.\+h$>$}
+
+\doxysubsubsection*{Открытые члены}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classCalculator_a60017c80b212ca2adbffe0886c3bc62c}{Calculator}} (std\+::vector$<$ double $>$input\+\_\+data)
+\begin{DoxyCompactList}\small\item\em Вычисление \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classCalculator_a2877d71d7b7e9578127e958076a2bcb4}\label{classCalculator_a2877d71d7b7e9578127e958076a2bcb4}} 
+double \mbox{\hyperlink{classCalculator_a2877d71d7b7e9578127e958076a2bcb4}{send\+\_\+res}} ()
+\begin{DoxyCompactList}\small\item\em Получение результата вычислений \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Закрытые данные}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classCalculator_ad4f2decf363a5584010ba317a52cb01a}\label{classCalculator_ad4f2decf363a5584010ba317a52cb01a}} 
+double {\bfseries results}
+\end{DoxyCompactItemize}
+
+
+\doxysubsubsection{Подробное описание}
+Класс для операции умножение вектора 
+
+Вектор указывается в параметрах конструктора. Для получения результат вычислений используется метод send\+\_\+res. 
+
+\doxysubsubsection{Конструктор(ы)}
+\mbox{\Hypertarget{classCalculator_a60017c80b212ca2adbffe0886c3bc62c}\label{classCalculator_a60017c80b212ca2adbffe0886c3bc62c}} 
+\index{Calculator@{Calculator}!Calculator@{Calculator}}
+\index{Calculator@{Calculator}!Calculator@{Calculator}}
+\doxyparagraph{\texorpdfstring{Calculator()}{Calculator()}}
+{\footnotesize\ttfamily Calculator\+::\+Calculator (\begin{DoxyParamCaption}\item[{std\+::vector$<$ double $>$}]{input\+\_\+data }\end{DoxyParamCaption})}
+
+
+
+Вычисление 
+
+
+\begin{DoxyParams}[1]{Аргументы}
+\mbox{\texttt{ in}}  & {\em input\+\_\+data} & Вектор данных. Не должен быть пустой. Тип данных double Исключения не возбуждаются \\
+\hline
+\end{DoxyParams}
+\begin{DoxyWarning}{Предупреждения}
+При переполнении будет возвращено inf или -\/inf 
+\end{DoxyWarning}
+
+
+Объявления и описания членов классов находятся в файлах\+:\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{Calculator_8h}{Calculator.\+h}}\item 
+Calculator.\+cpp\end{DoxyCompactItemize}
