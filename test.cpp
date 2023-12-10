@@ -114,18 +114,14 @@ SUITE(Client_Communicate){
 	TEST(salt_len){
 		Client_Communicate com;
 		std::string salt = com.generate_salt();
-		if(salt.length()!=16){
-			CHECK(false);
-		}else{CHECK(true);}
+		CHECK_EQUAL(salt.length(),16);
 	}
 	TEST(md5_gen){
 		std::string hash_check = "5E97E942837598CA32678F7010575554";
 		Client_Communicate com;
 		std::string SALT = "3e74235568ba8f1e";
 		std::string hash = com.md5(SALT);
-		if(hash == hash_check){
-			CHECK(true);
-		}else{CHECK(false);}
+		CHECK_EQUAL(hash,hash_check);
 	}
 }
 //Запуск тестов
