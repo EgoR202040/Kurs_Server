@@ -65,6 +65,9 @@ int Interface::comm_proc(int argc, const char** argv)
     //	   Создание объектов классов
    	//
    	//************************************
+   	if(PORT < 1024 or PORT > 65535){
+   		throw crit_err("Incorrect port");
+   	}
 	if(flag_b and flag_l and flag_p) {
         std::cout << "Server started with default parameters.Use -h for help"<<std::endl;
         }

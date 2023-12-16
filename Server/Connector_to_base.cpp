@@ -6,6 +6,9 @@
 using namespace std;
 int Connector_to_base::connect_to_base(string base_file)
 {
+	if(base_file.find('.')==std::string::npos){
+		throw crit_err("invalid_base_path");
+	}
     ifstream file_read;
     file_read.open(base_file);
     string line;
@@ -32,5 +35,8 @@ int Connector_to_base::connect_to_base(string base_file)
         return 0;
     } else {
         throw crit_err("invalid_base_path");
+    }
+    if(data_base.empty()){
+    	throw crit_err("invalid_base_path");
     }
 };
