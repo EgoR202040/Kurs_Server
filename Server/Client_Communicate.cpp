@@ -145,6 +145,7 @@ int Client_Communicate::connection(int port,std::map<std::string,std::string> da
                 rc = recv(work_sock,&count,sizeof count,0);
                 if(rc<=0) {
                     close(work_sock);
+                    l1->writelog("Error: count of vectors not received");
                     throw no_crit_err("Error: count of vectors not received");
                 }
                 l1->writelog("Vector count received");
@@ -172,11 +173,11 @@ int Client_Communicate::connection(int port,std::map<std::string,std::string> da
                     l1->writelog("Result of calculating vector send");
                 }
             } catch(no_crit_err& e) {
-                l1->writelog("Not critical error: " + *e.what());
+                l1->writelog(e.what());
             }
         }
     } catch(crit_err& e) {
-        l1->writelog("Critical error: " + *e.what());
+        l1->writelog(e.what());
     }
     return 0;
 }
