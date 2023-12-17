@@ -103,50 +103,49 @@ int Client_Communicate::connection(int port,std::map<std::string,std::string> da
                 socklen_t len = sizeof (sockaddr_in);
                 int work_sock = accept(s, (sockaddr*)(client_addr), &len);
                 if(work_sock <= 0) {
-                    throw no_crit_err("Client socket error");
+                    throw no_crit_err("[Uncritical]Client socket error");
                 }
                 l1->writelog("Client socket created");
                 rc = recv(work_sock,buff.get(),buff_size,0);
                 if(rc <= 0) {
                     close(work_sock);
-                    throw no_crit_err("ID receive error");
+                    throw no_crit_err("[Uncritical]ID receive error");
                 }
                 l1->writelog("ID from client received");
                 buff[rc]=0;
                 std::string ID(buff.get(),rc);
                 if(database.find(ID)==database.end()) {
                     close(work_sock);
-                    throw no_crit_err("Unknown ID");
+                    throw no_crit_err("[Uncritical]Unknown ID");
                 }
                 std::string salt_s = generate_salt();
                 rc = send(work_sock,salt_s.c_str(),16,0);
                 if(rc<=0) {
                     close(work_sock);
-                    throw no_crit_err("send SALT error");
+                    throw no_crit_err("[Uncritical]send SALT error");
                 }
                 rc = recv(work_sock,buff.get(),32,0);
                 if(rc<=0) {
                     close(work_sock);
-                    throw no_crit_err("HASH received error");
+                    throw no_crit_err("[Uncritical]HASH received error");
                 }
                 l1->writelog("HASH from client received");
                 buff[rc]=0;
                 std::string client_hash(buff.get(),rc);
                 if(md5(salt_s+database[ID])!=client_hash) {
                     close(work_sock);
-                    throw no_crit_err("Auth error");
+                    throw no_crit_err("[Uncritical]Auth error");
                 }
                 rc = send(work_sock,"OK",2,0);
                 if(rc<=0) {
                     close(work_sock);
-                    throw no_crit_err("Send OK error");
+                    throw no_crit_err("[Uncritical]Send OK error");
                 }
                 int count;
                 rc = recv(work_sock,&count,sizeof count,0);
                 if(rc<=0) {
                     close(work_sock);
-                    l1->writelog("Error: count of vectors not received");
-                    throw no_crit_err("Error: count of vectors not received");
+                    throw no_crit_err("[Uncritical error]count of vectors not received");
                 }
                 l1->writelog("Vector count received");
                 for(int i =0; i<count; i++) {
@@ -154,13 +153,13 @@ int Client_Communicate::connection(int port,std::map<std::string,std::string> da
                     rc = recv(work_sock,&vector_len,4,0);
                     if(rc<=0) {
                         close(work_sock);
-                        throw no_crit_err("Error: len of vector not received");
+                        throw no_crit_err("[Uncritical error]len of vector not received");
                     }
                     std::unique_ptr<double[]> vector_data(new double[vector_len]);
                     rc = recv(work_sock,vector_data.get(),vector_len*sizeof(double),0);
                     if(rc<=0) {
                         close(work_sock);
-                        throw no_crit_err("Error: vector not received");
+                        throw no_crit_err("[Uncritical error]vector not received");
                     }
                     std::vector<double> v(vector_data.get(),vector_data.get()+vector_len);
                     std::unique_ptr<Calculator[]> calc(new Calculator(v));
@@ -168,7 +167,7 @@ int Client_Communicate::connection(int port,std::map<std::string,std::string> da
                     rc = send(work_sock,&res,sizeof res,0);
                     if(rc <= 0) {
                         close(work_sock);
-                        throw no_crit_err("Error: result of calculating vector not send");
+                        throw no_crit_err("[Uncritical error]result of calculating vector not send");
                     }
                     l1->writelog("Result of calculating vector send");
                 }
