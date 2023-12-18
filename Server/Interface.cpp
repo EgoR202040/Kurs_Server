@@ -25,10 +25,10 @@ int Interface::comm_proc(int argc, const char** argv)
         opts.add_options()
         ("help,h", "Show help")
         ("basefile,b",
-         po::value<std::string>()->default_value("/home/stud/base/base.txt"),
+         po::value<std::string>()->default_value("/home/stud/base.txt"),
          "option is string(path to file with database)") 
         ("logfile,l",                        
-         po::value<std::string>()->default_value("/home/stud/log/log.txt"), 
+         po::value<std::string>()->default_value("/home/stud/log.txt"), 
          "option is string(path to file with logs)")
         ("PORT,p",                               
          po::value<int>(&PORT)->default_value(33333),
@@ -43,13 +43,13 @@ int Interface::comm_proc(int argc, const char** argv)
         }
 
         if(vm.count("basefile")) {
-            if(vm["basefile"].as<std::string>() == "/home/stud/base/base.txt") {
+            if(vm["basefile"].as<std::string>() == "/home/stud/base.txt") {
                 flag_b = true;
             }
             basefile = vm["basefile"].as<std::string>();
         }
         if(vm.count("logfile")) {
-            if(vm["logfile"].as<std::string>() == "/home/stud/log/log.txt") {
+            if(vm["logfile"].as<std::string>() == "/home/stud/log.txt") {
                 flag_l = true;
             }
             logfile = vm["logfile"].as<std::string>();
